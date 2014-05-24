@@ -28,130 +28,137 @@ using Mono.Cecil;
 
 namespace ICSharpCode.ILSpy.VB
 {
-	public class ILSpyEnvironmentProvider : IEnvironmentProvider
-	{
-		public string RootNamespace {
-			get {
-				return "";
-			}
-		}
+    public class ILSpyEnvironmentProvider : IEnvironmentProvider
+    {
+        public string RootNamespace
+        {
+            get
+            {
+                return "";
+            }
+        }
 
-		readonly CecilLoader loader = new CecilLoader();
-		
-		public string GetTypeNameForAttribute(ICSharpCode.NRefactory.CSharp.Attribute attribute)
-		{
-			return attribute.Type.Annotations
-				.OfType<Mono.Cecil.MemberReference>()
-				.First()
-				.FullName;
-		}
-		
-		public IType ResolveType(NRefactory.VB.Ast.AstType type, NRefactory.VB.Ast.TypeDeclaration entity = null)
-		{
-			/*
-			var annotation = type.Annotation<TypeReference>();
-			if (annotation == null )
-				return null;
-			
-			IEntity current = null;
-			if (entity != null) {
-				var typeInfo = entity.Annotation<TypeReference>();
-				current = loader.ReadTypeReference(typeInfo).Resolve(context).GetDefinition();
-			}
-			
-			return loader.ReadTypeReference(annotation, entity: current).Resolve(context);*/
-			return SpecialType.UnknownType;
-		}
-		
-		public TypeKind GetTypeKindForAstType(ICSharpCode.NRefactory.CSharp.AstType type)
-		{
-			var annotation = type.Annotation<TypeReference>();
-			if (annotation == null)
-				return TypeKind.Unknown;
-			
-			var definition = annotation.ResolveOrThrow();
-			if (definition.IsClass)
-				return TypeKind.Class;
-			if (definition.IsInterface)
-				return TypeKind.Interface;
-			if (definition.IsEnum)
-				return TypeKind.Enum;
-			if (definition.IsFunctionPointer)
-				return TypeKind.Delegate;
-			if (definition.IsValueType)
-				return TypeKind.Struct;
-			
-			return TypeKind.Unknown;
-		}
-		
-		public TypeCode ResolveExpression(ICSharpCode.NRefactory.CSharp.Expression expression)
-		{
-			var annotation = expression.Annotations.OfType<TypeInformation>().FirstOrDefault();
-			
-			if (annotation == null || annotation.InferredType == null)
-				return TypeCode.Object;
-			
-			var definition = annotation.InferredType.Resolve();
-			
-			if (definition == null)
-				return TypeCode.Object;
-			
-			switch (definition.FullName) {
-				case "System.String":
-					return TypeCode.String;
-				default:
-					break;
-			}
-			
-			return TypeCode.Object;
-		}
-		
-		public Nullable<bool> IsReferenceType(ICSharpCode.NRefactory.CSharp.Expression expression)
-		{
-			if (expression is ICSharpCode.NRefactory.CSharp.NullReferenceExpression)
-				return true;
-			
-			var annotation = expression.Annotations.OfType<TypeInformation>().FirstOrDefault();
-			
-			if (annotation == null || annotation.InferredType == null)
-				return null;
-			
-			var definition = annotation.InferredType.Resolve();
-			
-			if (definition == null)
-				return null;
-			
-			return !definition.IsValueType;
-		}
-		
-		public IEnumerable<NRefactory.VB.Ast.InterfaceMemberSpecifier> CreateMemberSpecifiersForInterfaces(IEnumerable<NRefactory.VB.Ast.AstType> interfaces)
-		{
-			foreach (var type in interfaces) {
-				var def = type.Annotation<TypeReference>().Resolve();
-				if (def == null) continue;
-				foreach (var method in def.Methods.Where(m => !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_"))) {
-					yield return new NRefactory.VB.Ast.InterfaceMemberSpecifier((NRefactory.VB.Ast.AstType)type.Clone(), method.Name);
-				}
-				
-				foreach (var property in def.Properties) {
-					yield return new NRefactory.VB.Ast.InterfaceMemberSpecifier((NRefactory.VB.Ast.AstType)type.Clone(), property.Name);
-				}
-			}
-		}
-		
-		public bool HasEvent(NRefactory.VB.Ast.Expression expression)
-		{
-			return expression.Annotation<EventDefinition>() != null;
-		}
-		
-		public bool IsMethodGroup(ICSharpCode.NRefactory.CSharp.Expression expression)
-		{
-			var annotation = expression.Annotation<MethodDefinition>();
-			if (annotation != null) {
-				return true;
-			}
-			
-			return false;
-		}
-	}
+        readonly CecilLoader loader = new CecilLoader();
+
+        public string GetTypeNameForAttribute(ICSharpCode.NRefactory.CSharp.Attribute attribute)
+        {
+            return attribute.Type.Annotations
+                .OfType<Mono.Cecil.MemberReference>()
+                .First()
+                .FullName;
+        }
+
+        public IType ResolveType(NRefactory.VB.Ast.AstType type, NRefactory.VB.Ast.TypeDeclaration entity = null)
+        {
+            /*
+            var annotation = type.Annotation<TypeReference>();
+            if (annotation == null )
+                return null;
+            
+            IEntity current = null;
+            if (entity != null) {
+                var typeInfo = entity.Annotation<TypeReference>();
+                current = loader.ReadTypeReference(typeInfo).Resolve(context).GetDefinition();
+            }
+            
+            return loader.ReadTypeReference(annotation, entity: current).Resolve(context);*/
+            return SpecialType.UnknownType;
+        }
+
+        public TypeKind GetTypeKindForAstType(ICSharpCode.NRefactory.CSharp.AstType type)
+        {
+            var annotation = type.Annotation<TypeReference>();
+            if (annotation == null)
+                return TypeKind.Unknown;
+
+            var definition = annotation.ResolveOrThrow();
+            if (definition.IsClass)
+                return TypeKind.Class;
+            if (definition.IsInterface)
+                return TypeKind.Interface;
+            if (definition.IsEnum)
+                return TypeKind.Enum;
+            if (definition.IsFunctionPointer)
+                return TypeKind.Delegate;
+            if (definition.IsValueType)
+                return TypeKind.Struct;
+
+            return TypeKind.Unknown;
+        }
+
+        public TypeCode ResolveExpression(ICSharpCode.NRefactory.CSharp.Expression expression)
+        {
+            var annotation = expression.Annotations.OfType<TypeInformation>().FirstOrDefault();
+
+            if (annotation == null || annotation.InferredType == null)
+                return TypeCode.Object;
+
+            var definition = annotation.InferredType.Resolve();
+
+            if (definition == null)
+                return TypeCode.Object;
+
+            switch (definition.FullName)
+            {
+                case "System.String":
+                    return TypeCode.String;
+                default:
+                    break;
+            }
+
+            return TypeCode.Object;
+        }
+
+        public Nullable<bool> IsReferenceType(ICSharpCode.NRefactory.CSharp.Expression expression)
+        {
+            if (expression is ICSharpCode.NRefactory.CSharp.NullReferenceExpression)
+                return true;
+
+            var annotation = expression.Annotations.OfType<TypeInformation>().FirstOrDefault();
+
+            if (annotation == null || annotation.InferredType == null)
+                return null;
+
+            var definition = annotation.InferredType.Resolve();
+
+            if (definition == null)
+                return null;
+
+            return !definition.IsValueType;
+        }
+
+        public IEnumerable<NRefactory.VB.Ast.InterfaceMemberSpecifier> CreateMemberSpecifiersForInterfaces(IEnumerable<NRefactory.VB.Ast.AstType> interfaces)
+        {
+            foreach (var type in interfaces)
+            {
+                var def = type.Annotation<TypeReference>().Resolve();
+                if (def == null) continue;
+                foreach (var method in def.Methods.Where(m => !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_")))
+                {
+                    yield return new NRefactory.VB.Ast.InterfaceMemberSpecifier((NRefactory.VB.Ast.AstType)type.Clone(), method.Name);
+                }
+
+                foreach (var property in def.Properties)
+                {
+                    yield return new NRefactory.VB.Ast.InterfaceMemberSpecifier((NRefactory.VB.Ast.AstType)type.Clone(), property.Name);
+                }
+            }
+        }
+
+        public bool HasEvent(NRefactory.VB.Ast.Expression expression)
+        {
+            return expression.Annotation<EventDefinition>() != null;
+        }
+
+        public bool IsMethodGroup(ICSharpCode.NRefactory.CSharp.Expression expression)
+        {
+            var annotation = expression.Annotation<MethodDefinition>();
+            if (annotation != null && annotation.SemanticsAttributes == MethodSemanticsAttributes.None)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
 }

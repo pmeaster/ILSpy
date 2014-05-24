@@ -16,6 +16,8 @@
     <AssemblyOriginatorKeyFile>..\ICSharpCode.NRefactory.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +37,12 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -169,6 +177,7 @@
     <Compile Include="OutputVisitor\OutputVisitor.cs" />
     <Compile Include="OutputVisitor\TextWriterOutputFormatter.cs" />
     <Compile Include="OutputVisitor\VBFormattingOptions.cs" />
+    <Compile Include="OutputVisitor\VBKeywords.cs" />
     <Compile Include="Parser\Errors.cs" />
     <Compile Include="Parser\Parser.cs">
       <DependentUpon>vb.atg</DependentUpon>
@@ -185,14 +194,9 @@
     <Compile Include="VBParser.cs" />
     <Compile Include="Visitors\CSharpToVBConverterVisitor.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ast\" />
-    <Folder Include="Lexer\" />
-    <Folder Include="PrettyPrinter\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Lexer\ExpressionFinder.atg">
-      <Generator>CocoParserGenerator</Generator>
       <CustomToolNamespace>ICSharpCode.NRefactory.VB.Parser</CustomToolNamespace>
       <LastGenOutput>Parser.cs</LastGenOutput>
     </None>
@@ -205,7 +209,6 @@
     </None>
     <None Include="Parser\vb.atg">
       <CustomToolNamespace>ICSharpCode.NRefactory.VB.Parser</CustomToolNamespace>
-      <Generator>CocoParserGenerator</Generator>
       <LastGenOutput>Parser.cs</LastGenOutput>
     </None>
   </ItemGroup>
